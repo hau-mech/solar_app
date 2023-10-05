@@ -2,6 +2,7 @@
 library(shiny)
 library(tidyr)
 library(ggplot2)
+library(tidyverse)
 
 # PV Module DATA 
 Isc_r <- 8.73
@@ -112,22 +113,32 @@ server <- function(input, output) {
     }
     
     # Reshape the data frame to long format for ggplot using tidyr
-    all_curve_data_long <- pivot_longer(all_curve_data, starts_with("Ipv_curve_"), 
-                                        names_to = "Curve", 
-                                        values_to = "Value")
+    all_curve_data_ipv_long <- all_curve_data |> 
+      select(V, starts_with("Ipv_curve_")) |>
+      pivot_longer(
+        starts_with("Ipv_curve_"),
+        names_to = "Curve",
+        values_to = "Value")
+    
+    all_curve_data_p_long <- all_curve_data |> 
+      select(V, starts_with("P_curve_")) |>
+      pivot_longer(
+        starts_with("P_curve_"),
+        names_to = "Curve",
+        values_to = "Value")
     
     # Plot PV Curve for all curves
-    pv_curve_plot <- ggplot(data = all_curve_data_long,
+    pv_curve_plot <- ggplot(data = all_curve_data_ipv_long,
                             aes(x = V, y = Value, color = Curve)) +
       geom_line() +
-      labs(x = "Voltage (V)", y = "Value", title = "PV Curves") +
+      labs(x = "U (volt)", y = "I (Ampere)", title = "PV Curves") +
       theme_bw()
     
     # Plot Efficiency Curve for all curves
-    efficiency_curve_plot <- ggplot(data = all_curve_data_long,
+    efficiency_curve_plot <- ggplot(data = all_curve_data_p_long,
                                     aes(x = V, y = Value, color = Curve)) +
       geom_line() +
-      labs(x = "Voltage (V)", y = "Value", title = "Efficiency Curves") +
+      labs(x = "U (volt)", y = "P (Watt)", title = "Efficiency Curves") +
       theme_bw()
     
     output$pv_curve_plot <- renderPlot({
