@@ -1,0 +1,12 @@
+name: solar_app
+title: solar_app
+username: javierelio
+account: javierelio
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10097024
+bundleId: 7766874
+url: https://javierelio.shinyapps.io/solar_app/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
